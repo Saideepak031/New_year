@@ -40,4 +40,6 @@ Run python manage.py makemigrations && python manage.py migrate and then python 
 
 Want me to:
 
-export the static files and templates as downloadable files now,
+export the static files and templates as downloadable files now, 
+
+host urls = https://www.pythonanywhere.com/user/saideepak/consoles/42968889/
