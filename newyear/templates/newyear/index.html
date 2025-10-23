@@ -1,0 +1,114 @@
+{% load static %}
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Happy New Year 2026</title>
+  <link rel="stylesheet" href="{% static 'newyear/css/styles.css' %}">
+</head>
+<body>
+  
+ <div class="bg"  href="{% static 'newyear/images' %}">
+    <div class="overlay">
+      <div class="container">
+        <div class="header">
+          <h1>🎉 Happy New Year 2026 🎉</h1>
+          <div>
+            <form method="post" style="display:inline">{% csrf_token %}
+              {{ wish_form.text }} <button name="add_wish">Add Wish</button>
+            </form>
+          </div>
+        </div>
+
+        <div class="grid">
+          <div>
+            <div class="card">
+              <h2>Wishes</h2>
+              <div class="wishes">
+                <ul>
+                {% for w in wishes %}
+                  <li>{{ w.text }} <small>— {{ w.created|date:'M d, Y' }}</small></li>
+                {% empty %}
+                  <li>No wishes yet — add one!</li>
+                {% endfor %}
+                </ul>
+              </div>
+            </div>
+
+            <div class="card" style="margin-top:16px;">
+              <h2>Notebook — Important Points</h2>
+              <div class="notes">
+                <ul>
+                {% for n in notes %}
+                  <li>
+                    <strong>{{ n.title }}</strong>
+                    <p>{{ n.content|linebreaksbr }}</p>
+                    <form action="{% url 'newyear:delete_note' n.pk %}" method="post">{% csrf_token %}
+                      <button type="submit">Delete</button>
+                    </form>
+                  </li>
+                {% empty %}
+                  <li>No notes yet — add one below.</li>
+                {% endfor %}
+                </ul>
+              </div>
+
+              <form method="post">{% csrf_token %}
+                {{ note_form.title }}<br>
+                {{ note_form.content }}<br>
+                <button name="add_note">Add Note</button>
+              </form>
+            </div>
+
+          </div>
+
+          <div>
+            <div class="card">
+              <div id="calendar-nav" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                <button class="prev">◀</button>
+                <strong>Calendar</strong>
+                <button class="next">▶</button>
+              </div>
+              <div id="calendar"></div>
+            </div>
+
+            <div class="card" style="margin-top:16px;">
+              <h3>Goals</h3>
+              <ul class="goal-list">
+                {% for g in goals %}
+                  <li class="{% if g.is_done %}done{% endif %}">
+                    {{ g.text }}
+                    <form method="post" action="{% url 'newyear:toggle_goal' g.pk %}" style="display:inline">{% csrf_token %}
+                      <button type="submit">{% if g.is_done %}Undo{% else %}Done{% endif %}</button>
+                    </form>
+                  </li>
+                {% empty %}
+                  <li>No goals yet — add one below.</li>
+                {% endfor %}
+              </ul>
+
+              <form method="post">{% csrf_token %}
+                {{ goal_form.text }}
+                <button name="add_goal">Add Goal</button>
+              </form>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="{% static 'newyear/js/calendar.js' %}"></script>
+  <script>
+    // initialize calendar to Jan 2026
+    initCalendar('calendar', 2026, 0);
+    // hook nav
+    document.getElementById('calendar-nav').id = 'calendar-nav';
+    // wire to calendar init
+    // the initCalendar expects id 'calendar-nav' for prev/next — adjust in calendar.js
+  </script>
+</body>
+</html>
